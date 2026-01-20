@@ -1,0 +1,59 @@
+
+/***************************************************************************************
+Mokshith Bharadwaj
+SkillsUsa Programing
+****************************************************************************************
+Problem 
+Min Window Substring
+*/
+import java.util.*;
+public class Main {
+  public static void main(String[] args) {
+    Scanner in = new Scanner(System.in);
+    System.out.print("Please enter the string and the parameter(Str,para): ");// message for the user to enter StrArr
+    String[] input = in.nextLine().split(",");
+    String result = minWindow(input[0], input[1]);
+    System.out.println(result);
+  }
+
+  public static String minWindow(String str, String para) // method to find the minimum window substring
+  {
+    int len1 = str.length();
+    int len2 = para.length();
+    if (len1 < len2)
+      return "incorrect input";
+    // create a hashmap to store the frequency of characters in the parameter string
+    HashMap<Character, Integer> Map = new HashMap<>();
+    HashMap<Character, Integer> window = new HashMap<>();
+
+    for (int i = 0; i < len2; i++)// Store occurrence of characters of para in Map
+      Map.put(para.charAt(i), Map.getOrDefault(para.charAt(i), 0) + 1);
+
+    int Start = 0, StartIndex = -1, minLength = Integer.MAX_VALUE, count = 0;
+
+    for (int j = 0; j < len1; j++) // Store occurrence of characters of str in window
+    {
+      char c = str.charAt(j);
+      window.put(c, window.getOrDefault(c, 0) + 1);
+      if (Map.containsKey(c) && window.get(c) <= Map.get(c))// if the character is present in both the string and the parameter string
+        count++;
+      if (count == len2) {
+        while (window.getOrDefault(str.charAt(Start), 0) > Map.getOrDefault(str.charAt(Start), 0)
+            || !Map.containsKey(str.charAt(Start)))// if the character is present in both the string and the parameter string
+        {
+          window.put(str.charAt(Start), window.get(str.charAt(Start)) - 1);
+          Start++;
+        }
+        int length = j - Start + 1;
+        if (minLength > length) // if the current window has a smaller length than the previous smallest window
+        {
+          minLength = length;
+          StartIndex = Start;
+        }
+      }
+    }
+    if (StartIndex == -1)// if no such window exists
+      return "no window found";
+    return str.substring(StartIndex, StartIndex + minLength);
+  }
+}
